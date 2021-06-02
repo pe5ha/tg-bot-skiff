@@ -5,6 +5,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class SkiffLadderWebhook extends TelegramWebhookBot {
+    String name="@SkiffLadderGameBot";
+    String token="1749369333:AAEQ2ikfg0NWghbHUqvrOXfa4Z0I2J3TZwo";
+    String url="https://fe697a5ae683.ngrok.io";
+
     SkiffLadderWebhook(){
         SendMessage message = new SendMessage(); // Create a SendMessage object with mandatory fields
         message.setChatId("235733832");
@@ -20,12 +24,12 @@ public class SkiffLadderWebhook extends TelegramWebhookBot {
 
     @Override
     public String getBotUsername() {
-        return "@SkiffLadderGameBot";
+        return name;
     }
 
     @Override
     public String getBotToken() {
-        return "1749369333:AAEe_JrNELDkAwYmIWZinBTKHmJOa7LAddM";
+        return token;
     }
 
     @Override
@@ -45,6 +49,6 @@ public class SkiffLadderWebhook extends TelegramWebhookBot {
 
     @Override
     public String getBotPath() {
-        return "https://e9dc08051862.ngrok.io";
+        return url;
     }
 }
