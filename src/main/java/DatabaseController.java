@@ -6,6 +6,12 @@ public class DatabaseController {
 //    private final String url="jdbc:mysql://"+IP+"/"+DB+"?serverTimezone=Europe/Moscow";
 //    private final String login="root";
 //    private final String password="1234";
+    private final String IP="pei17y9c5bpuh987.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306";
+    private final String DB="wnsvihyqnfnr9wqv";
+    private final String url="jdbc:mysql://"+IP+"/"+DB+"?serverTimezone=Europe/Moscow";
+    private final String login="hxajv37etqujodak";
+    private final String password="chg4fl154941i8fe";
+
 
 
     DatabaseController(){
