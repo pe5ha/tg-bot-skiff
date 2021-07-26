@@ -13,7 +13,6 @@ public class DatabaseController {
     private final String password="chg4fl154941i8fe";
 
 
-
     DatabaseController(){
 
         try{
