@@ -367,8 +367,8 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
     public String buildBotStatus(){
         String status = "";
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy HH:mm");
-        status+="Бот работает, если здесь правильное время.\n";
-        status+="Время: "+sdf.format(new Date())+"\n\n";
+        status+="Время: "+sdf.format(new Date())+"\n";
+        status+="Бот работает, если здесь правильное время.\n\n";
         status+="Число сыгранных игр: "+gameController.gamesCounter+"\n";
         status+="Игроков в игре: "+ database.getActiveUserCount()+"\n\n";
         status+="Го играй и приглашай знакомых :>\n";

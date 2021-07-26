@@ -1,11 +1,11 @@
 import java.sql.*;
 
 public class DatabaseController {
-    private final String IP="localhost:3306";
-    private final String DB="skiff-db";
-    private final String url="jdbc:mysql://"+IP+"/"+DB+"?serverTimezone=Europe/Moscow";
-    private final String login="root";
-    private final String password="1234";
+//    private final String IP="localhost:3306";
+//    private final String DB="skiff-db";
+//    private final String url="jdbc:mysql://"+IP+"/"+DB+"?serverTimezone=Europe/Moscow";
+//    private final String login="root";
+//    private final String password="1234";
 
 
     DatabaseController(){
