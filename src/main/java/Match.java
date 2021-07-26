@@ -8,7 +8,7 @@ public class Match {
     public int secondsToMove;
     public int turn;
     public boolean isSomeonePlayerWait;
-    public boolean isGameEnd;
+    public boolean isFinished;
     public boolean isDraw;
 
 
@@ -19,7 +19,7 @@ public class Match {
 
         secondsToMove = 15;
         isSomeonePlayerWait=false;
-        isGameEnd=false;
+        isFinished =false;
         isDraw=false;
         currPlayer=player1;
         anotherPlayer=player2;

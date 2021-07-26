@@ -56,6 +56,7 @@ public class DatabaseController {
             if(exist==0){
                 update("insert into users (userid,nickname,name) values (" + id + ",'"+nickname+"','"+name+"');");
             }
+            update("update users set nickname = '"+nickname+"' where userid = "+id+";");
 
             conn.close();
             statement.close();
@@ -115,14 +116,20 @@ public class DatabaseController {
         update("update users set userstate = '"+userstate+"' where userid = "+userid+";");
     }
     public void addGameResult(Match match){
-        String  res;
-        if(match.isDraw) res = "draw";
-        else res = match.winner.nickname;
-        update("insert into games (player1,player2,result) values ("+match.player1.userid+","+match.player2.userid+",'"+res+"');");
+        String res,win;
+        if(match.isDraw){
+            win="NULL";
+            res = "draw";
+        }
+        else {
+            win=match.winner.userid+"";
+            res = match.winner.nickname;
+        }
+        update("insert into games (player1,player2,nickname1,nickname2,result,winner) values ("+match.player1.userid+","+match.player2.userid+",'"+ match.player1.nickname+"','"+ match.player2.nickname+"','"+res+"',"+win+");");
     }
 
-    public int getActiveGamesCount(){
-        return selectOneInt("select count(*) from users where userstate = 'in game';")/2;
+    public int getActiveUserCount(){
+        return selectOneInt("select count(*) from users where userstate = 'in game';");
     }
 
 

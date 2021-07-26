@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/tg_bot_skiff_jar</output-path>
     <root id="archive" name="tg-bot-skiff.jar">
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/src/test/java/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="tg-bot-skiff.main" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.8.0/92999e26e6534606b5678014e66948286298a35c/commons-io-2.8.0.jar" path-in-jar="/" />
