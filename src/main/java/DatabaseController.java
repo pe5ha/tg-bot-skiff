@@ -21,7 +21,8 @@ public class DatabaseController {
     DatabaseController(){
 
         try{
-            Connection conn = DriverManager.getConnection(url, login, password);
+//            Connection conn = DriverManager.getConnection(url, login, password);
+            Connection conn = DriverManager.getConnection("jdbc:mysql://b81026c556f7f5:da27d0aa@eu-cdbr-west-01.cleardb.com/heroku_43f552638643669?reconnect=true");
             System.out.println("Connection to database SUCCESFULL.");
         } catch (SQLException exc) {
             System.out.println("Connection to database failed...");
