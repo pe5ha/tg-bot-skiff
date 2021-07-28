@@ -18,7 +18,7 @@ public class DatabaseController {
 //    private final String password="da27d0aa";
     private final String DATABASE_URL = "jdbc:" + (System.getenv("JAWSDB_URL") != null ?
             System.getenv("JAWSDB_URL") :
-            "mysql://hxajv37etqujodak:chg4fl154941i8fe@pei17y9c5bpuh987.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/wnsvihyqnfnr9wqv");
+            "mysql://hxajv37etqujodak:chg4fl154941i8fe@pei17y9c5bpuh987.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/wnsvihyqnfnr9wqv?serverTimezone=Europe/Moscow");
 
     DatabaseController(){
         System.out.println("Current database URL: " + DATABASE_URL);
@@ -26,6 +26,9 @@ public class DatabaseController {
 //            Connection conn = DriverManager.getConnection(url, login, password);
             Connection conn = DriverManager.getConnection(DATABASE_URL);
             System.out.println("Connection to database SUCCESFULL.");
+            Statement statement = conn.createStatement();
+            statement.executeUpdate("SET time_zone='Europe/Moscow';");
+
 
         } catch (SQLException exc) {
             System.out.println("Connection to database failed...");

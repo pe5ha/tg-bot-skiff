@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class SkiffLadderBot extends TelegramLongPollingBot {
@@ -373,7 +374,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
 //    }
     public String buildBotStatus(){
         String status = "";
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy HH:mm",new Locale("GMT+03:00"));
         status+="*Время: "+sdf.format(new Date())+"*\n";
         status+="Бот работает, если здесь правильное время.\n\n";
         status+="Число сыгранных игр: *"+gameController.gamesCounter+"*\n";
