@@ -14,6 +14,9 @@ public class GameController {
         matches.add(match);
 
     }
+    public void deleteMatch(Match match){
+        matches.remove(match);
+    }
 
     public Match someoneMakeMove(long userid, int betPoints){
         Match match = findMatchByPlayerId(userid);

@@ -85,8 +85,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
                         "███░░░░░░░░░░░░░░░███\n" +
                         "██████░░░░░░░░░██████\n" +
                         "█████████░∆░█████████\n" +
-                        "█████████████████████\n\n" +
-                        "t\\.me/SkiffLadder \\- канал с сообщениями о запуске и статусе бота\\!");
+                        "█████████████████████\n\n");
                 sendHello.enableMarkdownV2(true);
 //                sendHello.setParseMode("MarkdownV2");
                 try {
@@ -122,7 +121,11 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
                 sendMyMessage(""+chatId,false,"Доступны следующие команды:" +
                         "\n\n/start – главная" +
                         "\n/rules – правила игры" +
-                        "\n/leave – покинуть игру");
+                        "\n/leave – покинуть игру" +
+                        "\n/status – работает ли бот?");
+            }
+            if(text.equals("/status")){
+                sendMyMessage(""+chatId,false,"@SkiffLadder - канал со статусом бота и полезной инфой");
             }
             if (text.equals("/matcheslist")&&userid==adminUserId) sendMyMessage(""+chatId,false,""+gameController.matches.size());
             if(text.equals("/newgame"))sendMyMessage(""+chatId,true,"Пришлите никнейм пользователя с которым хотите сыграть в формате _@никнейм\\_друга_");
@@ -267,7 +270,8 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
         String info;
         EditMessageText editGameMessageP1; // current player
         EditMessageText editGameMessageP2; // another player
-        String result = match.isDraw?"ничья":match.winner.userid==match.player1.userid?"игрок 1":"игрок 2";
+        String result = "ЗАВЕРШЕНА ";
+                result += match.isDraw?"ничья":match.winner.userid==match.player1.userid?"игрок 1":"игрок 2";
         if (!match.isDraw) {
 
 
@@ -300,9 +304,12 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
         // TODO надо ли возможно подчищать список матчей ?
+
 //        editBotStatus(statusChatId,statusMessageId); //log chat
         updateBotPublicStatus(); // STATUS
         sendMyMessage(logChatId,false,result+": "+match.player1.nickname.replace("@","")+" против "+match.player2.nickname.replace("@","")); // logChat
+
+        gameController.deleteMatch(match);// подчищать список матчей ?
     }
 
 
@@ -351,7 +358,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
 
     public void updateBotPublicStatus(){
         String status=buildBotStatus();
-        editMyMessageText(statusChannelChatId,statusChannelMessageId,false,status);
+        editMyMessageText(statusChannelChatId,statusChannelMessageId,true,status);
     }
 
 
@@ -367,13 +374,32 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
     public String buildBotStatus(){
         String status = "";
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy HH:mm");
-        status+="Время: "+sdf.format(new Date())+"\n";
+        status+="*Время: "+sdf.format(new Date())+"*\n";
         status+="Бот работает, если здесь правильное время.\n\n";
-        status+="Число сыгранных игр: "+gameController.gamesCounter+"\n";
-        status+="Игроков в игре: "+ database.getActiveUserCount()+"\n\n";
+        status+="Число сыгранных игр: *"+gameController.gamesCounter+"*\n";
+        status+="Игроков в игре: *"+ database.getActiveUserCount()+"*\n\n";
         status+="Го играй и приглашай знакомых :>\n";
         status+="t.me/SkiffLadderGameBot\n";
-        return status;
+        return escapeMarcdownV2(status);
+    }
+    public String escapeMarcdownV2(String st){
+        return st.replace("_","\\_")
+//                .replace("*","\\*")
+        .replace("[","\\[")
+        .replace("]","\\[")
+        .replace("(","\\(")
+        .replace("~","\\~")
+        .replace("`","\\`")
+        .replace(">","\\>")
+        .replace("#","\\#")
+        .replace("+","\\+")
+        .replace("-","\\-")
+        .replace("=","\\=")
+        .replace("|","\\|")
+        .replace("{","\\{")
+        .replace("}","\\}")
+        .replace(".","\\.")
+        .replace("!","\\!");
     }
 
     public void editMyMessageText(String chatId,int messageId,boolean enableMarkdownV2,String newText){
