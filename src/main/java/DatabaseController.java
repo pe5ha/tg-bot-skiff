@@ -11,20 +11,22 @@ public class DatabaseController {
 //    private final String url="jdbc:mysql://"+IP+"/"+DB+"?serverTimezone=Europe/Moscow";
 //    private final String login="hxajv37etqujodak";
 //    private final String password="chg4fl154941i8fe";
-    private final String IP="eu-cdbr-west-01.cleardb.com:3306";
-    private final String DB="heroku_43f552638643669";
-    private final String url="jdbc:mysql://"+IP+"/"+DB+"?serverTimezone=Europe/Moscow";
-    private final String login="b81026c556f7f5";
-    private final String password="da27d0aa";
+//    private final String IP="eu-cdbr-west-01.cleardb.com:3306";
+//    private final String DB="heroku_43f552638643669";
+//    private final String url="jdbc:mysql://"+IP+"/"+DB+"?serverTimezone=Europe/Moscow";
+//    private final String login="b81026c556f7f5";
+//    private final String password="da27d0aa";
     private final String DATABASE_URL = "jdbc:" + (System.getenv("JAWSDB_URL") != null ?
             System.getenv("JAWSDB_URL") :
             "mysql://hxajv37etqujodak:chg4fl154941i8fe@pei17y9c5bpuh987.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/wnsvihyqnfnr9wqv");
 
     DatabaseController(){
+        System.out.println("Current database URL: " + DATABASE_URL);
         try {
 //            Connection conn = DriverManager.getConnection(url, login, password);
             Connection conn = DriverManager.getConnection(DATABASE_URL);
             System.out.println("Connection to database SUCCESFULL.");
+
         } catch (SQLException exc) {
             System.out.println("Connection to database failed...");
             exc.printStackTrace();
