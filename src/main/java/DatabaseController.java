@@ -16,13 +16,14 @@ public class DatabaseController {
     private final String url="jdbc:mysql://"+IP+"/"+DB+"?serverTimezone=Europe/Moscow";
     private final String login="b81026c556f7f5";
     private final String password="da27d0aa";
-
+    private final String DATABASE_URL = "jdbc:" + (System.getenv("JAWSDB_URL") != null ?
+            System.getenv("JAWSDB_URL") :
+            "mysql://hxajv37etqujodak:chg4fl154941i8fe@pei17y9c5bpuh987.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/wnsvihyqnfnr9wqv");
 
     DatabaseController(){
-
-        try{
+        try {
 //            Connection conn = DriverManager.getConnection(url, login, password);
-            Connection conn = DriverManager.getConnection("jdbc:mysql://b81026c556f7f5:da27d0aa@eu-cdbr-west-01.cleardb.com/heroku_43f552638643669?reconnect=true");
+            Connection conn = DriverManager.getConnection(DATABASE_URL);
             System.out.println("Connection to database SUCCESFULL.");
         } catch (SQLException exc) {
             System.out.println("Connection to database failed...");
@@ -37,7 +38,7 @@ public class DatabaseController {
 
     public void update(String s){
         try{
-            Connection conn = DriverManager.getConnection(url, login, password);
+            Connection conn = DriverManager.getConnection(DATABASE_URL);
 //            System.out.println("Connection to database SUCCESFULL.");
 
             Statement statement = conn.createStatement();
@@ -55,7 +56,7 @@ public class DatabaseController {
     public void addUser(long id, String nickname, String name){
 
         try{
-            Connection conn = DriverManager.getConnection(url, login, password);
+            Connection conn = DriverManager.getConnection(DATABASE_URL);
 //            System.out.println("Connection to database SUCCESFULL.");
 
 
@@ -79,7 +80,7 @@ public class DatabaseController {
     }
     public int selectOneInt(String s){
         try{
-            Connection conn = DriverManager.getConnection(url, login, password);
+            Connection conn = DriverManager.getConnection(DATABASE_URL);
 //            System.out.println("Connection to database SUCCESFULL.");
 
 
@@ -100,7 +101,7 @@ public class DatabaseController {
     }
     public String selectOneString(String s){
         try{
-            Connection conn = DriverManager.getConnection(url, login, password);
+            Connection conn = DriverManager.getConnection(DATABASE_URL);
 //            System.out.println("Connection to database SUCCESFULL.");
 
 
@@ -157,7 +158,7 @@ public class DatabaseController {
 
     public boolean existUser(String nickname){
         try{
-            Connection conn = DriverManager.getConnection(url, login, password);
+            Connection conn = DriverManager.getConnection(DATABASE_URL);
 //            System.out.println("Connection to database SUCCESFULL.");
             Statement statement = conn.createStatement();
             ResultSet res=statement.executeQuery("SELECT EXISTS(SELECT nickname FROM users WHERE nickname = '"+nickname+"');");
