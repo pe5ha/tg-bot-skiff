@@ -52,6 +52,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
         long chatId;
         int messageId;
 
+        // TODO кнопка реванша, играть со случайным, рейтинг, очки друг против друга,
 
 //        update.has
 
@@ -140,7 +141,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
 //                System.out.println(update.getMessage().getForwardFrom().getId());
             // по никнейму друга
             if(text.contains("@")) {
-                if (text.equals(username)) ; // чтобы не создавать с собой
+                if (database.getUseridByUsername(text)==userid) ; // чтобы не создавать с собой // TODO test
                 else if (database.getUserState(userid).equals("in game")) // если я ещё в игре. чтобы не создавать одновр неск партий
                     sendMyMessage("" + userid, false, "Вы ещё в игре, покинуть текущую игру можно командой /leave");
                 else if (database.existUser(text)) { // создание игры
@@ -191,11 +192,11 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
             messageId = update.getCallbackQuery().getMessage().getMessageId();
 
             // logChat
-            sendMyMessage(logChatId,false,userid+":"+update.getCallbackQuery().getFrom().getUserName()+": "+update.getCallbackQuery().getData());
+//            sendMyMessage(logChatId,false,userid+":"+update.getCallbackQuery().getFrom().getUserName()+": "+update.getCallbackQuery().getData());
 
             switch (database.getUserState(userid)){
                 case "inactivity":
-                    // TODO кнопки для старта игры
+                    // сообщение с ГЛАВНЫМ МЕНЮ кнопки для старта игры
                     break;
                 case "in game":
                     // игрок походил
@@ -210,7 +211,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
                             sendMyMessage(""+chatId,false,"Дождитесь хода соперника.");
                             sendMyMessage(logChatId,false,match.currPlayer.nickname+" abuse");
                             break;}
-                        sendMyMessage(logChatId,false,update.getCallbackQuery().getFrom().getUserName()+" play "+update.getCallbackQuery().getData());
+//                        sendMyMessage(logChatId,false,update.getCallbackQuery().getFrom().getUserName()+" play "+update.getCallbackQuery().getData());
 
 
                         EditMessageText editGameMessageP1; // current player
@@ -306,7 +307,6 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-        // TODO надо ли возможно подчищать список матчей ?
 
 //        editBotStatus(statusChatId,statusMessageId); //log chat
         updateBotPublicStatus(); // STATUS
