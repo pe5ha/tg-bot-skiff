@@ -35,7 +35,7 @@ test {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'Main'
+                'Main-Class': 'main.java.Main'
         )
     }
 }
