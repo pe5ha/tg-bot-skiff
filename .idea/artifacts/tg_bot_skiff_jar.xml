@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="tg-bot-skiff:jar">
+  <artifact type="jar" build-on-make="true" name="tg-bot-skiff.jar">
     <output-path>$PROJECT_DIR$/out/artifacts/tg_bot_skiff_jar</output-path>
     <root id="archive" name="tg-bot-skiff.jar">
       <element id="directory" name="META-INF">

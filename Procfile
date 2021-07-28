@@ -1,1 +1,1 @@
-bot: java -jar build/libs/tg-bot-skiff.jar
+bot: java -jar out/artifacts/tg_bot_skiff_jar/tg-bot-skiff.jar
