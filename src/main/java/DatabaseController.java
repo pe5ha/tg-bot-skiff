@@ -26,8 +26,8 @@ public class DatabaseController {
 //            Connection conn = DriverManager.getConnection(url, login, password);
             Connection conn = DriverManager.getConnection(DATABASE_URL);
             System.out.println("Connection to database SUCCESFULL.");
-            Statement statement = conn.createStatement();
-            statement.executeUpdate("SET time_zone='Europe/Moscow';");
+//            Statement statement = conn.createStatement();
+//            statement.executeUpdate("SET time_zone='Europe/Moscow';");
 
 
         } catch (SQLException exc) {
@@ -47,6 +47,7 @@ public class DatabaseController {
 //            System.out.println("Connection to database SUCCESFULL.");
 
             Statement statement = conn.createStatement();
+            statement.executeUpdate("SET time_zone='Europe/Moscow';");
             statement.executeUpdate(s);
 
             conn.close();
@@ -66,6 +67,8 @@ public class DatabaseController {
 
 
             Statement statement = conn.createStatement();
+            statement.executeUpdate("SET time_zone='Europe/Moscow';");
+
             ResultSet res=statement.executeQuery("SELECT EXISTS(SELECT userid FROM users WHERE userid = "+id+");");
             res.next();
             int exist = res.getInt(1);
@@ -90,6 +93,7 @@ public class DatabaseController {
 
 
             Statement statement = conn.createStatement();
+            statement.executeUpdate("SET time_zone='Europe/Moscow';");
             ResultSet res=statement.executeQuery(s);
 
             int n = -1;
@@ -111,6 +115,7 @@ public class DatabaseController {
 
 
             Statement statement = conn.createStatement();
+            statement.executeUpdate("SET time_zone='Europe/Moscow';");
             ResultSet res=statement.executeQuery(s);
             String str = "";
             if(res.next()) str = res.getString(1);
@@ -166,6 +171,7 @@ public class DatabaseController {
             Connection conn = DriverManager.getConnection(DATABASE_URL);
 //            System.out.println("Connection to database SUCCESFULL.");
             Statement statement = conn.createStatement();
+            statement.executeUpdate("SET time_zone='Europe/Moscow';");
             ResultSet res=statement.executeQuery("SELECT EXISTS(SELECT nickname FROM users WHERE nickname = '"+nickname+"');");
             res.next();
             boolean exist = res.getInt(1) != 0;
