@@ -331,7 +331,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
 
 
 //        updateBotPublicStatus(); // STATUS
-        System.out.println("Закончилась игра: "+match.winner.getAvailableName()+(match.isDraw?" ничья ":" победил "+ match.looser.getAvailableName()));
+        System.out.println("Закончилась игра: "+match.winner.getAvailableName()+(match.isDraw?" ничья ":" победил ")+ match.looser.getAvailableName());
         String result = "Закончилась игра: "+match.winner.getAvailableName().replace("@Pavel_Naumenko","Pavel_Naumenko")+(match.isDraw?" ничья ":" победил ")+ match.looser.getAvailableName().replace("@Pavel_Naumenko","Pavel_Naumenko");
         sendMyMessage(logChatId,false,result); // logChat
 

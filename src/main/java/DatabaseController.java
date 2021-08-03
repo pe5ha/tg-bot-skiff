@@ -39,7 +39,7 @@ public class DatabaseController {
 //            System.out.println("Connection to database SUCCESFULL.");
 
             Statement statement = conn.createStatement();
-//            statement.executeUpdate("SET time_zone='+3:00';");
+            statement.executeUpdate("SET time_zone='+3:00';");
             statement.executeUpdate(s);
 
             conn.close();
@@ -59,6 +59,7 @@ public class DatabaseController {
 
 
             Statement statement = conn.createStatement();
+            statement.executeUpdate("SET time_zone='+3:00';");
 //            statement.executeUpdate("SET time_zone='Europe/Moscow';");
 
             ResultSet res=statement.executeQuery("SELECT EXISTS(SELECT userid FROM users WHERE userid = "+id+");");
@@ -85,6 +86,7 @@ public class DatabaseController {
 
 
             Statement statement = conn.createStatement();
+            statement.executeUpdate("SET time_zone='+3:00';");
 //            statement.executeUpdate("SET time_zone='Europe/Moscow';");
             ResultSet res=statement.executeQuery(s);
 
@@ -108,6 +110,7 @@ public class DatabaseController {
 
             Statement statement = conn.createStatement();
 //            statement.executeUpdate("SET time_zone='Europe/Moscow';");
+            statement.executeUpdate("SET time_zone='+3:00';");
             ResultSet res=statement.executeQuery(s);
             String str = "";
             if(res.next()) str = res.getString(1);
@@ -121,6 +124,8 @@ public class DatabaseController {
         }
         return "";
     }
+
+
 
 
     public String getUserState(long id){
