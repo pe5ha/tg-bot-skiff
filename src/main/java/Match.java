@@ -10,6 +10,7 @@ public class Match {
     public boolean isSomeonePlayerWait;
     public boolean isFinished;
     public boolean isDraw;
+    public boolean isCanceled;
 
 
 
@@ -21,6 +22,7 @@ public class Match {
         isSomeonePlayerWait=false;
         isFinished =false;
         isDraw=false;
+        isCanceled=false;
         currPlayer=player1;
         anotherPlayer=player2;
         turn=0;

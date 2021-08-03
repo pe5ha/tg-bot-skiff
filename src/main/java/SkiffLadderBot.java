@@ -5,13 +5,14 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 
 
 public class SkiffLadderBot extends TelegramLongPollingBot {
     String name="@SkiffLadderGameBot";
-    String token="1749369333:AAEQ2ikfg0NWghbHUqvrOXfa4Z0I2J3TZwo";
+//    String token="1749369333:AAEQ2ikfg0NWghbHUqvrOXfa4Z0I2J3TZwo";
+    String token="1796068046:AAGqlRdhy-XDaV73PtHyzR6DL9LjIR7M1iA";
+    private final String BOT_TOKEN = "" + (System.getenv("BOT_TOKEN") == null ? token : System.getenv("BOT_TOKEN"));
     DatabaseController database = new DatabaseController();
     GameController gameController = new GameController();
     KeyboardAndViewController keyboardAndViewController = new KeyboardAndViewController();
@@ -36,7 +37,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
         sendMyMessage(statusChannelChatId,false,"Бот запущен!");
         statusChannelMessageId=sendMyMessage(statusChannelChatId,false,":)");
         ClockThread clockThread = new ClockThread("clock",this);
-        clockThread.start();
+//        clockThread.start();
     }
 
 
@@ -52,11 +53,8 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
         long chatId;
         int messageId;
 
-        // TODO кнопка реванша, играть со случайным, рейтинг, очки друг против друга,
+        // TODO таймер на ход, очки друг против друга, играть со случайным, рейтинг
 
-//        update.has
-
-//        System.out.println(update);// test log
 
         // Если получено сообщение с текстом
         if (update.hasMessage() && update.getMessage().hasText()) {
@@ -69,28 +67,29 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
 
             // Добавление нового пользователя
             database.addUser(userid, username, firstname);
-            System.out.println(update.getMessage().getChatId() + ": "+update.getMessage().getFrom().getId()+": " + username + ": " + text); // test log
-//            System.out.println(update.getMessage().getAuthorSignature());
-//            System.out.println(update.getMessage().getSenderChat());
-//            System.out.println(update.getMessage().getForwardFrom().getId());
-//            System.out.println(sendMyMessage());
 
-            sendMyMessage(logChatId,false,userid+":"+update.getMessage().getFrom().getUserName()+": "+text);
+            System.out.println(chatId + ":" + userid + ":" + username + ":" + firstname + ": " + text);
+            sendMyMessage(logChatId, false, chatId + ":" + userid + ":" + username.replace("@Pavel_Naumenko","Pavel_Naumenko") + ":" + firstname + ": " + text);
+
 
             if (text.equals("/start")){
                 SendMessage sendHello = new SendMessage();
                 sendHello.setChatId(""+chatId);
-                sendHello.setText("Привет\\! Это игра *Лестница Скифов*\\. Она только\\-только доделана до MVP, так что в ней пока очень мало функционала\\. " +
+                sendHello.setText("Привет\\! Это игра *Лестница Скифов*\\." +
                         "\n\nНа данный момент возможно играть только с другом, вручную отправив сюда его никнейм в формате _@никнейм\\_друга_\\. " +
-                        "При этом друг должен предварительно запустить этого бота или написать ему /start\\. \n\n/help – правила игры, прочие команды\\." +
-                        "\n\nЧисло сыгранных игр: *"+gameController.gamesCounter+"*\n" +
-                        "Игроков в игре: *"+ database.getActiveUserCount()+"*\n\n" +
+                        "При этом друг должен предварительно запустить этого бота\\." +
+                        "\n\nОписание и правила: /about" +
+                        "\nСписок команд: /help" +
+                        "\n\nЧисло сыгранных игр: *"+database.getGamesCountAll()+"*\n" +
+                        "За сегодня: *"+database.getGamesCountToday()+"*\n"+
+                        "Играют сейчас: *"+ database.getActiveUserCount()+"*\n\n" +
                         "░░░░░░░░░░░░░░░░░░░░░\n" +
                         "███░░░░░░░░░░░░░░░███\n" +
                         "██████░░░░░░░░░██████\n" +
                         "█████████░∆░█████████\n" +
                         "█████████████████████\n\n");
                 sendHello.enableMarkdownV2(true);
+                sendHello.disableWebPagePreview();
 //                sendHello.setParseMode("MarkdownV2");
                 try {
                     execute(sendHello);
@@ -98,7 +97,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
-            if (text.equals("/rules")){
+            else if (text.equals("/rules")){
                 SendMessage sendHelp = new SendMessage();
                 sendHelp.setChatId(""+chatId);
                 sendHelp.setText("Лестница Скифов - легкая интуитивная игра, в которую играют один на один.\n" +
@@ -117,151 +116,132 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
-            if(text.equals("/leave")&&database.getUserState(userid).equals("in game")){
+            else if(text.equals("/leave")&&database.getUserState(userid).equals("in game")){
                 Match match = gameController.cancelGame(userid);
                 endGame(match);
             }
-            if(text.equals("/help")){
+            else if(text.equals("/help")){
                 sendMyMessage(""+chatId,false,"Доступны следующие команды:" +
-                        "\n\n/start – главная" +
+                        "\n\n/start – главная менюшка" +
+                        "\n/about – статья про бота" +
                         "\n/rules – правила игры" +
-                        "\n/leave – покинуть игру" +
+                        "\n/leave – отменить текущую игру" +
                         "\n/status – работает ли бот?");
             }
-            if(text.equals("/status")){
+            else if(text.equals("/status")){
                 sendMyMessage(""+chatId,false,"@SkiffLadder - канал со статусом бота и полезной инфой");
             }
-            if (text.equals("/matcheslist")&&userid==adminUserId) sendMyMessage(""+chatId,false,""+gameController.matches.size());
-            if(text.equals("/newgame"))sendMyMessage(""+chatId,true,"Пришлите никнейм пользователя с которым хотите сыграть в формате _@никнейм\\_друга_");
+            else if(text.equals("/about")){
+                sendMyMessage(""+chatId,false,"https://telegra.ph/Lestnica-Skifov--telegram-bot-07-30");
+            }
+            else if (text.equals("/newgame")) {
+                sendMyMessage("" + chatId, true, "Пришлите никнейм пользователя с которым хотите сыграть в формате _@никнейм\\_друга_");
+            }
 //            if(text.equals("/status")&&userid==adminUserId) ;
+            if (userid==adminUserId) {
+                if(text.contains("/selectOneString")){
+                    sendMyMessage(""+chatId,false,database.selectOneString(text.split(" ",2)[1]));
+                }
+                else if(text.contains("/selectOneInt")){
+                    sendMyMessage(""+chatId,false,""+database.selectOneInt(text.split(" ",2)[1]));
+                }
+                else if(text.contains("/sendTo")){
+                    sendMyMessage(text.split(" ",3)[1],false,text.split(" ",3)[2]);
+                }
+                else if(text.contains("/sendAll")){
 
-            // Создание игры с другом
-            // по id друга
-//            if(update.getMessage().getForwardFrom() != null)
-//                System.out.println(update.getMessage().getForwardFrom().getId());
-            // по никнейму друга
-            if(text.contains("@")) {
-                if (database.getUseridByUsername(text)==userid) ; // чтобы не создавать с собой // TODO test
-                else if (database.getUserState(userid).equals("in game")) // если я ещё в игре. чтобы не создавать одновр неск партий
-                    sendMyMessage("" + userid, false, "Вы ещё в игре, покинуть текущую игру можно командой /leave");
-                else if (database.existUser(text)) { // создание игры
-                    if (database.getUserState(database.getUseridByUsername(text)).equals("inactivity")) {
-
-                        Player player1 = new Player(userid, username, firstname);
-                        Player player2 = new Player(database.getUseridByUsername(text), text, database.getFirstnameByUsername(text));
-                        Match match = new Match(player1, player2);
-                        gameController.newMatch(match);
-
-                        // оправка игры первому игроку
-                        SendMessage gameUIp1Message = keyboardAndViewController.sendGameKeyboard(chatId, 50);
-                        // оправка игры второму игроку
-                        sendMyMessage("" + player2.userid, false, "Игрок " + player1.nickname + " пригласил вас в игру! Ваш ход!");
-                        SendMessage gameUIp2Message = keyboardAndViewController.sendGameKeyboard(player2.userid, 50); // вместо chatId - userid
-
-                        try {
-                            player1.gameMessageId = execute(gameUIp1Message).getMessageId();
-                            player2.gameMessageId = execute(gameUIp2Message).getMessageId();
-                            database.setUserState(player1.userid, "in game");
-                            database.setUserState(player2.userid, "in game");
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
-//                    editBotStatus(statusChatId,statusMessageId);
-                        updateBotPublicStatus(); //status
-                        sendMyMessage(logChatId, false, player1.nickname.replace("@", "") + " играет с " + player2.nickname.replace("@", "")); // logChat
-                        // TODO настройка стрима
-
-                    } else {
-                        sendMyMessage("" + chatId, false, "Этот игрок уже с кем-то играет в данный момент.");
-                    }
-                } else {
-                    sendMyMessage("" + chatId, false, "Пользователь " + text + " ещё не запускал бота. Отправьте ему ссылку t.me/SkiffLadderGameBot или перешлите это сообщение.");
                 }
             }
-//            if(update.getMessage().getForwardFrom() != null)
-//                System.out.println(update.getMessage().getForwardFrom().getId());
-            // "либо пользователь запретил ссылаться на его профиль
+
+            // Создание игры с другом
+            if(text.startsWith("@")) {
+                long friendId = database.getUseridByUsername(text);
+                if(friendId<0) sendMyMessage("" + chatId, false, "Пользователь " + text + " ещё не запускал бота. Отправьте ему ссылку t.me/SkiffLadderGameBot или перешлите это сообщение.");
+                else if (friendId==userid) sendMyMessage(""+chatId,false,"Сыграй с кем-нибудь телеграм знакомым"); // чтобы не создавать с собой
+                else {
+                    Player player1 = new Player(userid, username, database.getFirstnameByUserid(userid));
+                    Player player2 = new Player(friendId, text, database.getFirstnameByUserid(friendId));
+                    newGame(player1, player2);
+                }
+
+            }
+
         }
 
         // info Нажатие инлайн КНОПКИ
-        if(update.hasCallbackQuery()){
-
+        else if(update.hasCallbackQuery()){
 
             userid = update.getCallbackQuery().getFrom().getId();
+            username = "@"+update.getCallbackQuery().getFrom().getUserName();
             chatId = update.getCallbackQuery().getMessage().getChatId();
             messageId = update.getCallbackQuery().getMessage().getMessageId();
-
-            // logChat
-//            sendMyMessage(logChatId,false,userid+":"+update.getCallbackQuery().getFrom().getUserName()+": "+update.getCallbackQuery().getData());
-
-            switch (database.getUserState(userid)){
-                case "inactivity":
-                    // сообщение с ГЛАВНЫМ МЕНЮ кнопки для старта игры
-                    break;
-                case "in game":
-                    // игрок походил
-                    if(Integer.parseInt(update.getCallbackQuery().getData())>=0) { // fixme не актуальное условие, теперь проверка внутри движка
-
-//                        System.out.println(update.getCallbackQuery().getFrom().getUserName()+" play "+update.getCallbackQuery().getData()); // log
-
-
-                        Match match;
-                        match = gameController.someoneMakeMove(userid, Integer.parseInt(update.getCallbackQuery().getData())); // тут обсчитывается ход
-                        if(match.currPlayer.moveStatus.equals("abuse")) { // чтобы не ходил дважды
-                            sendMyMessage(""+chatId,false,"Дождитесь хода соперника.");
-                            sendMyMessage(logChatId,false,match.currPlayer.nickname+" abuse");
-                            break;}
-//                        sendMyMessage(logChatId,false,update.getCallbackQuery().getFrom().getUserName()+" play "+update.getCallbackQuery().getData());
-
-
-                        EditMessageText editGameMessageP1; // current player
-                        EditMessageText editGameMessageP2; // another player
-                        String info;
-
-                        // если конец игры
-                        if (match.isFinished) {
-                            endGame(match);
-                            database.addGameResult(match); // почему не в внутри функции?
-                        }
-                        // если ещё игра
-                        else {
-                            // обновление для игрока только что нажавшего
-//                            String reminder;
-                            // TODO "ВАШ ХОД" сверху игры чтобы видно из списка диалогов
-                            // TODO таймер на 15 сек
-                            if (match.isSomeonePlayerWait) info = "\n*Вы сходили* | Соперник ходит"; else info = "\nВы ходите | Соперник ходит";
-                            info+=getMovesHistory(match.turn,match.currPlayer,match.anotherPlayer);
-                            editGameMessageP1 = buildGameMessageUpdate(chatId,messageId,info,match.currPlayer.position,match.currPlayer.points);
-                            // обновление для другого игрока
-                            if (match.isSomeonePlayerWait) info = "\nВы ходите | *Соперник сходил*"; else info = "\nВы ходите | Соперник ходит";
-                            info+=getMovesHistory(match.turn,match.anotherPlayer,match.currPlayer);
-                            editGameMessageP2 = buildGameMessageUpdate(match.anotherPlayer.userid,match.anotherPlayer.gameMessageId,info,match.anotherPlayer.position,match.anotherPlayer.points);// вместо chatId - userid
-
-                            try {
-                                execute(editGameMessageP1);
-                                execute(editGameMessageP2);
-                            } catch (TelegramApiException e) {
-                                e.printStackTrace();
-                            }
-                            /*
-                            // стрим
-                            info="\nИгрок 1 | Игрок 2";
-                            EditMessageText editStreamMessage = new EditMessageText();
-                            editStreamMessage.setText(keyboardAndViewController.gameStateImg(match.player1.position) + info);
-                            editStreamMessage.setChatId(""+streamChatId);
-                            editStreamMessage.setMessageId(streamMessageId);
-                            try {
-                                execute(editStreamMessage);
-                            } catch (TelegramApiException e) {
-                                e.printStackTrace();
-                            }
-                            */
-                        }
-
-                    }
-                    break;
+            String button = update.getCallbackQuery().getData();
+            int betPoints = -1;
+            try {
+                betPoints=Integer.parseInt(button);
             }
+            catch(NumberFormatException ignored) {
+            }
+
+            if (gameController.isCurrentGame(userid,messageId)&&betPoints>=0){ // если это кнопка идущей игры
+
+                Match match = gameController.someoneMakeMove(userid, betPoints); // тут обсчитывается ход
+
+                if(match.currPlayer.moveStatus.equals("abuse"))
+                    sendMyMessage(""+chatId,false,"Дождитесь хода соперника."); //Если игрок спамит
+                else if(match.isFinished) {// если конец игры
+                    endGame(match);
+                    database.addGameResult(match);
+                }
+                else {  // если ещё игра
+                    EditMessageText editGameMessageP1; // current player
+                    EditMessageText editGameMessageP2; // another player
+                    String info;
+
+                    // обновление для игрока только что нажавшего
+                    if (match.isSomeonePlayerWait) info = "\n*Вы сходили* | Соперник ходит";
+                    else info = "\nВы ходите | Соперник ходит";
+                    info += getMovesHistory(match.turn, match.currPlayer, match.anotherPlayer);
+                    editGameMessageP1 = buildGameMessageUpdate(chatId, messageId, info, match.currPlayer.position, match.currPlayer.points);
+                    // обновление для другого игрока
+                    if (match.isSomeonePlayerWait) info = "\nВы ходите | *Соперник сходил*";
+                    else info = "\nВы ходите | Соперник ходит";
+                    info += getMovesHistory(match.turn, match.anotherPlayer, match.currPlayer);
+                    editGameMessageP2 = buildGameMessageUpdate(match.anotherPlayer.userid, match.anotherPlayer.gameMessageId, info, match.anotherPlayer.position, match.anotherPlayer.points);// вместо chatId - userid
+
+                    try {
+                        execute(editGameMessageP1);
+                        execute(editGameMessageP2);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+
+
+            }
+            else if(button.equals("rematch")){
+                long friendId = database.getFriendIdByPreviousGame(userid,messageId);
+                if(friendId>0) {
+
+                    Player player1 = new Player(userid, username, database.getFirstnameByUserid(userid));
+                    Player player2 = new Player(friendId, database.getUsernameByUserid(friendId), database.getFirstnameByUserid(friendId));
+
+                    newGame(player1, player2);
+                }
+                else {
+                    sendMyMessage(""+chatId,false,"Что-то пошло не так..");
+                }
+            }
+
+
         }
+
+
+
+
+
 
 
 
@@ -269,16 +249,47 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
 
     }
 
+    public void newGame(Player player1,Player player2){
+
+        if (gameController.isPlayingNowPlayer(player1.userid)) sendMyMessage("" + player1.userid, false, "Вы ещё в игре, покинуть текущую игру можно командой /leave");
+        else if (gameController.isPlayingNowPlayer(player2.userid)) sendMyMessage("" + player2.userid, false, "Этот игрок уже с кем-то играет в данный момент");
+        else if(sendMyMessage("" + player2.userid, false, "Игрок " + player1.getAvailableName() + " пригласил вас в игру! Ваш ход!")!=0){
+            // всё ок - начало игры
+            sendMyMessage(""+player1.userid, false, "Вы отправили вызов игроку "+player2.getAvailableName());
+
+            Match match = new Match(player1, player2);
+            gameController.newMatch(match);
+
+            // оправка игры первому игроку
+            SendMessage gameUIp1Message = keyboardAndViewController.sendGameKeyboard(player1.userid, 50);
+            // оправка игры второму игроку
+            SendMessage gameUIp2Message = keyboardAndViewController.sendGameKeyboard(player2.userid, 50);
+
+            try {
+                player1.gameMessageId = execute(gameUIp1Message).getMessageId();
+                player2.gameMessageId = execute(gameUIp2Message).getMessageId();
+                database.setUserState(player1.userid, "in game");
+                database.setUserState(player2.userid, "in game");
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+//                    editBotStatus(statusChatId,statusMessageId);
+//            updateBotPublicStatus(); //status
+            System.out.println("Началась игра: "+player1.getAvailableName() + " vs " + player2.getAvailableName());
+            sendMyMessage(logChatId, false, "Началась игра: "+player1.getAvailableName().replace("@Pavel_Naumenko","Pavel_Naumenko") + " vs " + player2.getAvailableName().replace("@Pavel_Naumenko","Pavel_Naumenko")); // logChat
+            // TODO настройка стрима
+
+        } else {
+            sendMyMessage("" + player1.userid, false, player2.getAvailableName() +" заблокировал бота :( попроси его снова запустить меня...");
+        }
+    }
 
     public void endGame(Match match){
         String info;
         EditMessageText editGameMessageP1; // current player
         EditMessageText editGameMessageP2; // another player
-        String result = "ЗАВЕРШЕНА ";
-                result += match.isDraw?"ничья":match.winner.userid==match.player1.userid?"игрок 1":"игрок 2";
+
         if (!match.isDraw) {
-
-
             info="\n*Вы победили!* \uD83D\uDC51";
             info+=getMovesHistory(match.turn,match.winner,match.looser);
             editGameMessageP1 = buildGameMessageUpdate(match.winner.userid,match.winner.gameMessageId,info,match.winner.position,0);
@@ -288,7 +299,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
 
             database.setUserState(match.player1.userid,"inactivity");
             database.setUserState(match.player2.userid,"inactivity");
-            System.out.println("Winner: "+match.winner.nickname+" Looser: "+match.looser.nickname);
+            System.out.println("Winner: "+match.winner.username +" Looser: "+match.looser.username);
         } else {
             info="\n*Ничья!*";
             info+=getMovesHistory(match.turn,match.player1,match.player2);
@@ -299,7 +310,17 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
 
             database.setUserState(match.player1.userid,"inactivity");
             database.setUserState(match.player2.userid,"inactivity");
-            System.out.println("Ничья: "+match.player1.nickname+" - "+match.player2.nickname);
+            System.out.println("Ничья: "+match.player1.username +" - "+match.player2.username);
+        }
+
+        // Реванш кнопка
+        if(!match.isCanceled) {
+            List<List<AbstractMap.SimpleEntry<String, String>>> arrayButtonNames = new ArrayList<>();
+            List<AbstractMap.SimpleEntry<String, String>> buttonsRow = new ArrayList<>();
+            buttonsRow.add(new AbstractMap.SimpleEntry<>("rematch", "Реванш!"));
+            arrayButtonNames.add(buttonsRow);
+            editGameMessageP1.setReplyMarkup(keyboardAndViewController.buildMessageKeyboard(arrayButtonNames));
+            editGameMessageP2.setReplyMarkup(keyboardAndViewController.buildMessageKeyboard(arrayButtonNames));
         }
         try {
             execute(editGameMessageP1);
@@ -308,14 +329,31 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
 
-//        editBotStatus(statusChatId,statusMessageId); //log chat
-        updateBotPublicStatus(); // STATUS
-        sendMyMessage(logChatId,false,result+": "+match.player1.nickname.replace("@","")+" против "+match.player2.nickname.replace("@","")); // logChat
+
+//        updateBotPublicStatus(); // STATUS
+        System.out.println("Закончилась игра: "+match.winner.getAvailableName()+(match.isDraw?" ничья ":" победил "+ match.looser.getAvailableName()));
+        String result = "Закончилась игра: "+match.winner.getAvailableName().replace("@Pavel_Naumenko","Pavel_Naumenko")+(match.isDraw?" ничья ":" победил ")+ match.looser.getAvailableName().replace("@Pavel_Naumenko","Pavel_Naumenko");
+        sendMyMessage(logChatId,false,result); // logChat
 
         gameController.deleteMatch(match);// подчищать список матчей ?
     }
 
 
+    public void streamGame(){
+        /*
+        // стрим
+        info="\nИгрок 1 | Игрок 2";
+        EditMessageText editStreamMessage = new EditMessageText();
+        editStreamMessage.setText(keyboardAndViewController.gameStateImg(match.player1.position) + info);
+        editStreamMessage.setChatId(""+streamChatId);
+        editStreamMessage.setMessageId(streamMessageId);
+        try {
+            execute(editStreamMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+        */
+    }
 
     public int sendMyMessage(String chatId,boolean enableMarkdownV2, String s){
         SendMessage sendMessage = new SendMessage();
@@ -412,11 +450,11 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
         editMessageText.setText(newText);
 //        editMessageText.disableWebPagePreview();
         if(enableMarkdownV2)editMessageText.setParseMode("MarkdownV2");
-        try {
-            execute(editMessageText);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            execute(editMessageText);
+//        } catch (TelegramApiException e) {
+//            e.printStackTrace();
+//        }
     }
 
 
@@ -427,7 +465,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return token;
+        return BOT_TOKEN;
     }
 
     // TODO трансляция хода игры (без кнопок) в канал трансляций

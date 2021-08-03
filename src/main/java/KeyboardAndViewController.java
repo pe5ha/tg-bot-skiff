@@ -3,8 +3,10 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageRe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class KeyboardAndViewController {
@@ -56,7 +58,7 @@ public class KeyboardAndViewController {
 
 
     public InlineKeyboardMarkup setGameKeyboard(int points){
-        if(points==0) return null;
+       if(points==0) return null;
        int rows = points/8+1;
 
        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
@@ -80,6 +82,23 @@ public class KeyboardAndViewController {
        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
        inlineKeyboardMarkup.setKeyboard(rowList);
 
+       return inlineKeyboardMarkup;
+   }
+
+   public InlineKeyboardMarkup buildMessageKeyboard (List<List<AbstractMap.SimpleEntry<String,String>>> arrayButtonNames){
+       List<List<InlineKeyboardButton>> rowsList = new ArrayList<>();
+       for (int i = 0; i < arrayButtonNames.size(); i++) {
+           List<InlineKeyboardButton> buttonsRow = new ArrayList<>();
+           for (int j = 0; j < arrayButtonNames.get(i).size(); j++) {
+               InlineKeyboardButton button = new InlineKeyboardButton();
+               button.setText(arrayButtonNames.get(i).get(j).getValue());
+               button.setCallbackData(arrayButtonNames.get(i).get(j).getKey());
+               buttonsRow.add(button);
+           }
+           rowsList.add(buttonsRow);
+       }
+       InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+       inlineKeyboardMarkup.setKeyboard(rowsList);
        return inlineKeyboardMarkup;
    }
 

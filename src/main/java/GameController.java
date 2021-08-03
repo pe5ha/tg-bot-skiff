@@ -68,6 +68,8 @@ public class GameController {
                     (match.player2.points==0&&match.player1.points<getNeededStepToWin(match.player1.position))){
                 match.isFinished =true;
                 match.isDraw=true;
+                match.winner=match.player1;
+                match.looser=match.player2;
             }
             // следующий ход
             else {
@@ -95,7 +97,8 @@ public class GameController {
         Match match = findMatchByPlayerId(userid);
         match.looser=findPlayerById(match,userid);
         match.winner=match.anotherPlayer;
-        match.isFinished =true;
+        match.isFinished = true;
+        match.isCanceled = true;
         return match;
     }
 
@@ -127,12 +130,27 @@ public class GameController {
         return null;
     }
 
+
     public Match findMatchByPlayerId(long userid){
         for (Match match : matches) {
             if (match.player1.userid == userid && !match.isFinished) return match;
             if (match.player2.userid == userid && !match.isFinished) return match;
         }
         return null;
+    }
+    public boolean isPlayingNowPlayer(long userid){
+        for (Match match : matches) {
+            if (match.player1.userid == userid && !match.isFinished) return true;
+            if (match.player2.userid == userid && !match.isFinished) return true;
+        }
+        return false;
+    }
+    public boolean isCurrentGame(long userid,int gameMessageId){
+        for (Match match : matches) {
+            if (match.player1.userid == userid && match.player1.gameMessageId == gameMessageId && !match.isFinished) return true;
+            if (match.player2.userid == userid && match.player2.gameMessageId == gameMessageId && !match.isFinished) return true;
+        }
+        return false;
     }
 
 

@@ -2,8 +2,8 @@ import java.util.ArrayList;
 
 public class Player {
     public long userid;
-    public String nickname;
-    public String name;
+    public String username;
+    public String firstname;
 
     public int gameMessageId;
 
@@ -16,10 +16,10 @@ public class Player {
     ArrayList<Integer> moves = new ArrayList<>();
 
 
-    public Player(long userid, String nickname, String name) {
+    public Player(long userid, String username, String firstname) {
         this.userid = userid;
-        this.nickname = nickname;
-        this.name = name;
+        this.username = username;
+        this.firstname = firstname;
         points = 50;
         bet=0;
         seconds = 15;
@@ -35,6 +35,9 @@ public class Player {
         moves.add(betPoints);
     }
 
+    public String getAvailableName(){
+        return (username.equals("@null")?firstname:username);
+    }
 
 
 }
