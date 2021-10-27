@@ -10,8 +10,7 @@ public class DatabaseController {
     private final String DATABASE_URL = "jdbc:" + (System.getenv("JAWSDB_URL") != null ?
             System.getenv("JAWSDB_URL") :
             "mysql://root:1234@localhost:3306/skiff-db?serverTimezone=Europe/Moscow");
-//            "mysql://hxajv37etqujodak:chg4fl154941i8fe@pei17y9c5bpuh987.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/wnsvihyqnfnr9wqv?serverTimezone=Europe/Moscow");
-
+    
     DatabaseController(){
         System.out.println("Current database URL: " + DATABASE_URL);
         try {
