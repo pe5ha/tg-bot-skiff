@@ -11,7 +11,8 @@ import java.util.*;
 public class SkiffLadderBot extends TelegramLongPollingBot {
     String name="@SkiffLadderGameBot";
 //    String token="1749369333:AAEQ2ikfg0NWghbHUqvrOXfa4Z0I2J3TZwo";
-    String token="1796068046:AAGqlRdhy-XDaV73PtHyzR6DL9LjIR7M1iA";
+//    String token="1796068046:AAGqlRdhy-XDaV73PtHyzR6DL9LjIR7M1iA";
+    String token="5128427183:AAH7yQtoD61SjMmwpWaf0ZIuLpkXUFvAutU";
     private final String BOT_TOKEN = "" + (System.getenv("BOT_TOKEN") == null ? token : System.getenv("BOT_TOKEN"));
     DatabaseController database = new DatabaseController();
     GameController gameController = new GameController();
@@ -31,6 +32,12 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
     long statusChatId = -542398399;
     int statusMessageId;
 
+    long userid;
+    String username;
+    String firstname;
+    String text="";
+    long chatId;
+    int messageId;
 
 
     SkiffLadderBot(){
@@ -46,12 +53,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-        long userid;
-        String username;
-        String firstname;
-        String text="";
-        long chatId;
-        int messageId;
+
 
         // TODO таймер на ход, очки друг против друга, играть со случайным, рейтинг
 
@@ -76,11 +78,9 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
                 SendMessage sendHello = new SendMessage();
                 sendHello.setChatId(""+chatId);
                 sendHello.setText("Привет\\! Это игра *Лестница Скифов*\\." +
-                        "\n\nНа данный момент возможно играть только с другом, вручную отправив сюда его никнейм в формате _@никнейм\\_друга_\\. " +
-                        "При этом друг должен предварительно запустить этого бота\\." +
                         "\n\nОписание и правила: /about" +
-                        "\nСписок команд: /help" +
-                        "\n\nЧисло сыгранных игр: *"+database.getGamesCountAll()+"*\n" +
+                        "\nИграть: /play" +
+                        "\n\nВсего проведено игр: *"+database.getGamesCountAll()+"*\n" +
                         "За сегодня: *"+database.getGamesCountToday()+"*\n"+
                         "Играют сейчас: *"+ database.getActiveUserCount()+"*\n\n" +
                         "░░░░░░░░░░░░░░░░░░░░░\n" +
@@ -96,6 +96,14 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
+            }
+            if(text.startsWith("/start")){
+                long friendId = Long.parseLong(text.split(" ")[1]);
+                // TODO save friend as referral
+                wantStartGame(friendId);
+            }
+            else if(text.equals("/play")){
+                sendMyMessage("" + chatId, false, "Перешли другу ссылку t.me/SkiffLadderGameBot?start="+userid+", чтобы пригласить в игру.");
             }
             else if (text.equals("/rules")){
                 SendMessage sendHelp = new SendMessage();
@@ -120,14 +128,14 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
                 Match match = gameController.cancelGame(userid);
                 endGame(match);
             }
-            else if(text.equals("/help")){
-                sendMyMessage(""+chatId,false,"Доступны следующие команды:" +
-                        "\n\n/start – главная менюшка" +
-                        "\n/about – статья про бота" +
-                        "\n/rules – правила игры" +
-                        "\n/leave – отменить текущую игру" +
-                        "\n/status – работает ли бот?");
-            }
+//            else if(text.equals("/help")){
+//                sendMyMessage(""+chatId,false,"Доступны следующие команды:" +
+//                        "\n\n/start – главная менюшка" +
+//                        "\n/about – статья про бота" +
+//                        "\n/rules – правила игры" +
+//                        "\n/leave – отменить текущую игру" +
+//                        "\n/status – работает ли бот?");
+//            }
             else if(text.equals("/status")){
                 sendMyMessage(""+chatId,false,"@SkiffLadder - канал со статусом бота и полезной инфой");
             }
@@ -156,15 +164,9 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
             // Создание игры с другом
             if(text.startsWith("@")) {
                 long friendId = database.getUseridByUsername(text);
-                if(friendId<0) sendMyMessage("" + chatId, false, "Пользователь " + text + " ещё не запускал бота. Отправьте ему ссылку t.me/SkiffLadderGameBot или перешлите это сообщение.");
-                else if (friendId==userid) sendMyMessage(""+chatId,false,"Сыграй с кем-нибудь телеграм знакомым"); // чтобы не создавать с собой
-                else {
-                    Player player1 = new Player(userid, username, database.getFirstnameByUserid(userid));
-                    Player player2 = new Player(friendId, text, database.getFirstnameByUserid(friendId));
-                    newGame(player1, player2);
-                }
-
+                wantStartGame(friendId);
             }
+
 
         }
 
@@ -238,18 +240,21 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
 
         }
 
+    }
 
-
-
-
-
-
-
-
-
+    public void wantStartGame(long friendId){
+        if(database.getFirstnameByUserid(friendId).length()==0) sendMyMessage("" + chatId, false, "Такой пользователь ещё не запускал бота. Перешли ему ссылку t.me/SkiffLadderGameBot?start="+userid+", чтобы пригласить в игру");
+        else if (friendId==userid) sendMyMessage(""+chatId,false,"С самим собой тут пока играть нельзя. Сыграй с кем-нибудь"); // чтобы не создавать с собой
+        else {
+            Player player1 = new Player(userid, username, database.getFirstnameByUserid(userid));
+            Player player2 = new Player(friendId, database.getUsernameByUserid(friendId), database.getFirstnameByUserid(friendId));
+            newGame(player1, player2);
+        }
     }
 
     public void newGame(Player player1,Player player2){
+
+
 
         if (gameController.isPlayingNowPlayer(player1.userid)) sendMyMessage("" + player1.userid, false, "Вы ещё в игре, покинуть текущую игру можно командой /leave");
         else if (gameController.isPlayingNowPlayer(player2.userid)) sendMyMessage("" + player2.userid, false, "Этот игрок уже с кем-то играет в данный момент");
