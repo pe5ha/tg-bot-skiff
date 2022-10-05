@@ -10,9 +10,7 @@ import java.util.*;
 
 public class SkiffLadderBot extends TelegramLongPollingBot {
     String name="@SkiffLadderGameBot";
-//    String token="1749369333:AAEQ2ikfg0NWghbHUqvrOXfa4Z0I2J3TZwo";
-//    String token="1796068046:AAGqlRdhy-XDaV73PtHyzR6DL9LjIR7M1iA";
-    String token="5128427183:AAH7yQtoD61SjMmwpWaf0ZIuLpkXUFvAutU";
+    String token="";
     private final String BOT_TOKEN = "" + (System.getenv("BOT_TOKEN") == null ? token : System.getenv("BOT_TOKEN"));
     DatabaseController database = new DatabaseController();
     GameController gameController = new GameController();
