@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class SkiffLadderWebhook extends TelegramWebhookBot {
     String name="@SkiffLadderGameBot";
-    String token="1749369333:AAEQ2ikfg0NWghbHUqvrOXfa4Z0I2J3TZwo";
+    String token="";
     String url="https://fe697a5ae683.ngrok.io";
 
     SkiffLadderWebhook(){
