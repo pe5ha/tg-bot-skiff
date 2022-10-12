@@ -101,7 +101,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
                 wantStartGame(friendId);
             }
             else if(text.equals("/play")){
-                sendMyMessage("" + chatId, false, "Мультиплеер на данный момент отсутсвует. Перешли другу эту ссылку t.me/SkiffLadderGameBot?start="+userid+", чтобы пригласить в игру.");
+                sendMyMessage("" + chatId, false, "Мультиплеер на данный момент отсутсвует. Перешли другу эту ссылку t.me/SkiffLadderGameBot?start="+userid+", игра начнётся как только он по ней перейдёт.");
             }
             else if (text.equals("/rules")){
                 SendMessage sendHelp = new SendMessage();
