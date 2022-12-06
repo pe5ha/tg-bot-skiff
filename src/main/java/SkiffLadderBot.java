@@ -23,7 +23,7 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
     boolean stream = true;
     int streamMessageId;
 
-//    String statusChannelChatId = "-1001457091664";
+    String statusChannelChatId = "-1001457091664";
     int statusChannelMessageId;
 
     String  logChatId = "-415920993";
@@ -39,9 +39,8 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
 
 
     SkiffLadderBot(){
-//        sendMyMessage(statusChannelChatId,false,"Бот запущен!");
-//        statusChannelMessageId=sendMyMessage(statusChannelChatId,false,":)");
-        ClockThread clockThread = new ClockThread("clock",this);
+        sendMyMessage(statusChannelChatId,false,"Бот запущен!");
+//        ClockThread clockThread = new ClockThread("clock",this);
 //        clockThread.start();
     }
 
