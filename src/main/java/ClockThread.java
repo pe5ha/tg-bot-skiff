@@ -20,7 +20,7 @@ public class ClockThread extends Thread{
                 Thread.sleep(60000);
 //                Bot.editMyMessageText(""+Bot.statusChatId, Bot.statusMessageId, false, sdf.format(new Date()));
 //                i++;
-                Bot.updateBotPublicStatus();
+//                Bot.updateBotPublicStatus();
             }
         }
         catch(InterruptedException e){

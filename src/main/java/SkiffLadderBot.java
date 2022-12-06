@@ -23,11 +23,11 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
     boolean stream = true;
     int streamMessageId;
 
-    String statusChannelChatId = "-1001457091664";
+//    String statusChannelChatId = "-1001457091664";
     int statusChannelMessageId;
 
     String  logChatId = "-415920993";
-    long statusChatId = -542398399;
+//    long statusChatId = -542398399;
     int statusMessageId;
 
     long userid;
@@ -39,8 +39,8 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
 
 
     SkiffLadderBot(){
-        sendMyMessage(statusChannelChatId,false,"Бот запущен!");
-        statusChannelMessageId=sendMyMessage(statusChannelChatId,false,":)");
+//        sendMyMessage(statusChannelChatId,false,"Бот запущен!");
+//        statusChannelMessageId=sendMyMessage(statusChannelChatId,false,":)");
         ClockThread clockThread = new ClockThread("clock",this);
 //        clockThread.start();
     }
@@ -400,10 +400,10 @@ public class SkiffLadderBot extends TelegramLongPollingBot {
     }
 
 
-    public void updateBotPublicStatus(){
-        String status=buildBotStatus();
-        editMyMessageText(statusChannelChatId,statusChannelMessageId,true,status);
-    }
+//    public void updateBotPublicStatus(){
+//        String status=buildBotStatus();
+//        editMyMessageText(statusChannelChatId,statusChannelMessageId,true,status);
+//    }
 
 
 
