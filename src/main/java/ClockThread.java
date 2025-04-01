@@ -1,6 +1,6 @@
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+// внес изменения и что теперь? ты должен подтвердить это?
 public class ClockThread extends Thread{
 
     SkiffLadderBot Bot;
